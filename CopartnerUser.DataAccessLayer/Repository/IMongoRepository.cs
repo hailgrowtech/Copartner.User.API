@@ -25,6 +25,7 @@ namespace CopartnerUser.DataAccessLayer.Repository
 
         TDocument FindById(string id);
 
+
         Task<TDocument> FindByIdAsync(string id);
 
         void InsertOne(TDocument document);

@@ -144,5 +144,11 @@ namespace CopartnerUser.DataAccessLayer.Repository
         {
             return Task.Run(() => _collection.DeleteManyAsync(filterExpression));
         }
+
+        //public Task<List<TDocument>> FindAsync()
+        //{
+            
+        //    return _collection.FindSync().ToList();
+        //}
     }
 }
