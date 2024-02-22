@@ -10,6 +10,8 @@ namespace CopartnerUserAPI
 
             // Add services to the container.
 
+
+            // Serilog
             var logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(builder.Configuration)
                 .Enrich.FromLogContext()

@@ -1,6 +1,7 @@
+using CopartnerUserAPI;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CopartnerUserAPI.Controllers
+namespace SerilogTutorial.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -8,10 +9,10 @@ namespace CopartnerUserAPI.Controllers
     {
         private static readonly string[] Summaries = new[]
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger _logger;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
@@ -21,6 +22,9 @@ namespace CopartnerUserAPI.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+
+            _logger.LogInformation("Seri Log is Working");
+
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
