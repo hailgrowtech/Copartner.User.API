@@ -1,3 +1,6 @@
+using CopartnerUser.DataAccessLayer.MongoDBSettings;
+using CopartnerUser.DataAccessLayer.Repository;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace CopartnerUserAPI
@@ -18,6 +21,16 @@ namespace CopartnerUserAPI
                 .CreateLogger();
             builder.Logging.ClearProviders();
             builder.Logging.AddSerilog(logger);
+
+
+            //MongoDb Service
+            builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDbSettings"));
+
+            builder.Services.AddSingleton<IMongoDBSettings>(serviceProvider =>
+                serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>().Value);
+
+            builder.Services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
+
 
 
             builder.Services.AddControllers();
