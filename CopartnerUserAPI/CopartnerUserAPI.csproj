@@ -21,4 +21,8 @@
     <Folder Include="logs\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CopartnerUser.DataAccessLayer\CopartnerUser.DataAccessLayer.csproj" />
+  </ItemGroup>
+
 </Project>
