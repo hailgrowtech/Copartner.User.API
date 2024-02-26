@@ -2,6 +2,8 @@
 using CopartnerUser.DataAccessLayer.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
+using System.Linq.Expressions;
 
 namespace CopartnerUserAPI.Controllers
 {
@@ -10,14 +12,53 @@ namespace CopartnerUserAPI.Controllers
     public class ExpertsController : ControllerBase
     {
         private readonly ILogger _logger;
-        private readonly IMongoRepository<Experts> _repository;
+        private readonly IMongoRepository<Experts> _repositoryExperts;
+        private readonly IMongoRepository<Sequence> _repositorySequence;
 
 
-        public ExpertsController(IMongoRepository<Experts> repository, ILogger<ExpertsController> logger)
+        public ExpertsController(IMongoRepository<Experts> repositoryExperts, IMongoRepository<Sequence> repositorySequence, ILogger<ExpertsController> logger)
         {
-            _repository = repository;
+            _repositoryExperts = repositoryExperts;
+            _repositorySequence = repositorySequence;
             _logger = logger;
         }
+
+        //private async Task<int> GetNextSequenceValue(string sequenceName)
+        //{
+        //    var filter = Builders<Sequence>.Filter.Eq(s => s.Name, sequenceName);
+        //    var update = Builders<Sequence>.Update.Inc(s => s.Value, 1);
+        //    var options = new FindOneAndUpdateOptions<Sequence>
+        //    {
+        //        IsUpsert = true,
+        //        ReturnDocument = ReturnDocument.After
+        //    };
+
+        //    Expression<Func<Sequence, bool>> filterExpression = s => s.Name == sequenceName;
+        //    var sequence = await _collection.FindOneAndUpdateAsync(filterExpression, update, options);
+        //    return sequence.Value;
+        //}
+
+        private async Task<int> GetNextSequenceValue(string sequenceName)
+        {
+            return await _repositorySequence.GetNextSequenceValue(sequenceName);
+        }
+
+
+        //[HttpPost("registerExpert")]
+        //public async Task<IActionResult> AddExpert(Experts expert)
+        //{
+        //    // Generate ExpertId
+        //    expert.ExpertId = await GetNextSequenceValue("ExpertId");
+
+        //    // Generate CallAvailabilityIds
+        //    foreach (var availability in expert.CallAvailabilities)
+        //    {
+        //        availability.CallAvailabilityId = await GetNextSequenceValue("CallAvailabilityId");
+        //    }
+
+        //    await _repositoryExperts.InsertOneAsync(expert);
+        //    return CreatedAtAction(nameof(GetExpert), new { id = expert.ExpertId }); // Remove the object expression here
+        //}
 
 
         [HttpPost("registerExpert")]
@@ -25,27 +66,48 @@ namespace CopartnerUserAPI.Controllers
         {
             var expert = new Experts()
             {
+                ExpertId = await GetNextSequenceValue("ExpertId"),
                 FirstName = experts.FirstName,
                 LastName = experts.LastName,
                 Experience = experts.Experience,
                 Followers = experts.Followers,
-                ExpertTypeId = experts.ExpertTypeId,
+                ExpertType = experts.ExpertType,
                 BioDescription = experts.BioDescription,
                 Rating = experts.Rating,
                 Pic = experts.Pic,
-                CallAvailabilityIds = experts.CallAvailabilityIds,
+                CallAvailabilities = experts.CallAvailabilities,
 
 
             };
-            await _repository.InsertOneAsync(expert);
+            await _repositoryExperts.InsertOneAsync(expert);
         }
+
+
+
+
+        //    //var expert = new Experts()
+        //    //{
+        //    //    FirstName = experts.FirstName,
+        //    //    LastName = experts.LastName,
+        //    //    Experience = experts.Experience,
+        //    //    Followers = experts.Followers,
+        //    //    ExpertType = experts.ExpertType,
+        //    //    BioDescription = experts.BioDescription,
+        //    //    Rating = experts.Rating,
+        //    //    Pic = experts.Pic,
+        //    //    CallAvailabilities = experts.CallAvailabilities,
+
+
+        //    //};
+        //    //await _repository.InsertOneAsync(expert);
+        //}
 
         [HttpGet("getAllExperts")]
         public IActionResult GetAllExperts()
         {
             try
             {
-                var allExperts = _repository.AsQueryable().ToList();
+                var allExperts = _repositoryExperts.AsQueryable().ToList();
                 return Ok(allExperts);
             }
             catch (Exception ex)
@@ -60,7 +122,7 @@ namespace CopartnerUserAPI.Controllers
         {
             try
             {
-                var expert = _repository.FindById(id);
+                var expert = _repositoryExperts.FindById(id);
                 if (expert == null)
                 {
                     return NotFound("Expert not found.");
@@ -79,13 +141,13 @@ namespace CopartnerUserAPI.Controllers
         {
             try
             {
-                var existingExpert = _repository.FindById(id);
+                var existingExpert = _repositoryExperts.FindById(id);
                 if (existingExpert == null)
                 {
                     return NotFound("Expert not found.");
                 }
                 expert.Id = existingExpert.Id; // Ensure the ID remains the same
-                await _repository.ReplaceOneAsync(expert);
+                await _repositoryExperts.ReplaceOneAsync(expert);
                 return Ok("Expert updated successfully.");
             }
             catch (Exception ex)
@@ -100,12 +162,12 @@ namespace CopartnerUserAPI.Controllers
         {
             try
             {
-                var existingExpert = _repository.FindById(id);
+                var existingExpert = _repositoryExperts.FindById(id);
                 if (existingExpert == null)
                 {
                     return NotFound("Expert not found.");
                 }
-                await _repository.DeleteByIdAsync(id);
+                await _repositoryExperts.DeleteByIdAsync(id);
                 return Ok("Expert deleted successfully.");
             }
             catch (Exception ex)

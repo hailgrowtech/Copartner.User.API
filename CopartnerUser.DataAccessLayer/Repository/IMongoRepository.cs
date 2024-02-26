@@ -1,4 +1,5 @@
 ﻿using CopartnerUser.DataAccessLayer.Entities;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,5 +52,9 @@ namespace CopartnerUser.DataAccessLayer.Repository
         void DeleteMany(Expression<Func<TDocument, bool>> filterExpression);
 
         Task DeleteManyAsync(Expression<Func<TDocument, bool>> filterExpression);
+
+        //Task<TDocument> =(Expression<Func<TDocument, bool>> filterExpression, UpdateDefinition<TDocument> updateDefinition, FindOneAndUpdateOptions<TDocument> options);
+
+        Task<int> GetNextSequenceValue(string sequenceName);
     }
 }
