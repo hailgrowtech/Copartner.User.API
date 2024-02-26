@@ -11,19 +11,26 @@ namespace CopartnerUserAPI.Controllers
     {
         private readonly ILogger _logger;
         private readonly IMongoRepository<CallAvailability> _repositoryCallAvailability;
+        private readonly IMongoRepository<Sequence> _repositorySequence;
 
-        public MasterController(IMongoRepository<CallAvailability> repositoryCallAvailability, ILogger<MasterController> logger)
+        public MasterController(ILogger<MasterController> logger, IMongoRepository<CallAvailability> repositoryCallAvailability, IMongoRepository<Sequence> repositorySequence)
         {
+            _logger = logger;
             _repositoryCallAvailability = repositoryCallAvailability;
-            _logger = logger; 
+            _repositorySequence = repositorySequence;
         }
 
+        private async Task<int> GetNextSequenceValue(string sequenceName)
+        {
+            return await _repositorySequence.GetNextSequenceValue(sequenceName);
+        }
 
         [HttpPost("addTimeSlot")]
         public async Task AddTimeSlot(CallAvailability callAvailability)
         {
             var slots = new CallAvailability()
             {
+                CallAvailabilityId = await GetNextSequenceValue("CallAvailabilityId"),
                 Time = callAvailability.Time,
                 AMPM = callAvailability.AMPM,
                 isActive = callAvailability.isActive
