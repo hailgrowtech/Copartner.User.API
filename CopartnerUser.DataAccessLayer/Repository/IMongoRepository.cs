@@ -24,7 +24,7 @@ namespace CopartnerUser.DataAccessLayer.Repository
 
         Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression);
 
-        TDocument FindById(string id);
+        TDocument FindById(int id, string field);
 
 
         Task<TDocument> FindByIdAsync(string id);
@@ -47,7 +47,7 @@ namespace CopartnerUser.DataAccessLayer.Repository
 
         void DeleteById(string id);
 
-        Task DeleteByIdAsync(string id);
+        Task DeleteByIdAsync(int id, string field);
 
         void DeleteMany(Expression<Func<TDocument, bool>> filterExpression);
 

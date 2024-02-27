@@ -118,11 +118,12 @@ namespace CopartnerUserAPI.Controllers
         }
 
         [HttpGet("getExpert/{id}")]
-        public IActionResult GetExpert(string id)
+        public IActionResult GetExpert(int id)
         {
             try
             {
-                var expert = _repositoryExperts.FindById(id);
+                var field = "ExpertId";
+                var expert = _repositoryExperts.FindById(id, field);
                 if (expert == null)
                 {
                     return NotFound("Expert not found.");
@@ -137,11 +138,12 @@ namespace CopartnerUserAPI.Controllers
         }
 
         [HttpPut("updateExpert/{id}")]
-        public async Task<IActionResult> UpdateExpert(string id, Experts expert)
+        public async Task<IActionResult> UpdateExpert(int id, Experts expert)
         {
             try
             {
-                var existingExpert = _repositoryExperts.FindById(id);
+                var field = "ExpertId";
+                var existingExpert = _repositoryExperts.FindById(id, field);
                 if (existingExpert == null)
                 {
                     return NotFound("Expert not found.");
@@ -158,16 +160,17 @@ namespace CopartnerUserAPI.Controllers
         }
 
         [HttpDelete("deleteExpert/{id}")]
-        public async Task<IActionResult> DeleteExpert(string id)
+        public async Task<IActionResult> DeleteExpert(int id)
         {
             try
             {
-                var existingExpert = _repositoryExperts.FindById(id);
+                var field = "ExpertId";
+                var existingExpert = _repositoryExperts.FindById(id, field);
                 if (existingExpert == null)
                 {
                     return NotFound("Expert not found.");
                 }
-                await _repositoryExperts.DeleteByIdAsync(id);
+                await _repositoryExperts.DeleteByIdAsync(id, field);
                 return Ok("Expert deleted successfully.");
             }
             catch (Exception ex)

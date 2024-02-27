@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CopartnerUserAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class MasterController : ControllerBase
     {
@@ -24,8 +24,9 @@ namespace CopartnerUserAPI.Controllers
         {
             return await _repositorySequence.GetNextSequenceValue(sequenceName);
         }
-
-        [HttpPost("addTimeSlot")]
+        
+        [HttpPost()]
+        [Route(APIRoutes.AddTimeSlots)]
         public async Task AddTimeSlot(CallAvailability callAvailability)
         {
             var slots = new CallAvailability()
@@ -38,7 +39,8 @@ namespace CopartnerUserAPI.Controllers
             await _repositoryCallAvailability.InsertOneAsync(slots);
         }
 
-        [HttpGet("getAllTimeSlots")]
+        [HttpGet()]
+        [Route(APIRoutes.GetAllTimeSlots)]
         public IActionResult GetAllTimeSlot()
         {
             try
@@ -53,12 +55,14 @@ namespace CopartnerUserAPI.Controllers
             }
         }
 
-        [HttpGet("getTimeSlot/{id}")]
-        public IActionResult GetTimeSlotById(string id)
+        [HttpGet()]
+        [Route(APIRoutes.GetTimeSlotById)]
+        public IActionResult GetTimeSlotById(int id)
         {
             try
             {
-                var expert = _repositoryCallAvailability.FindById(id);
+                var field = "CallAvailabilityId";
+                var expert = _repositoryCallAvailability.FindById(id, field);
                 if (expert == null)
                 {
                     return NotFound("Expert not found.");
@@ -72,12 +76,14 @@ namespace CopartnerUserAPI.Controllers
             }
         }
 
-        [HttpPut("updateTimeSlot/{id}")]
-        public async Task<IActionResult> UpdateTimeSlot(string id, CallAvailability callAvailability)
+        [HttpPut()]
+        [Route(APIRoutes.UpdateTimeSlot)]
+        public async Task<IActionResult> UpdateTimeSlot(int id, CallAvailability callAvailability)
         {
             try
             {
-                var existingExpert = _repositoryCallAvailability.FindById(id);
+                var field = "CallAvailabilityId";
+                var existingExpert = _repositoryCallAvailability.FindById(id, field);
                 if (existingExpert == null)
                 {
                     return NotFound("Expert not found.");
@@ -93,17 +99,19 @@ namespace CopartnerUserAPI.Controllers
             }
         }
 
-        [HttpDelete("deleteExpert/{id}")]
-        public async Task<IActionResult> DeleteTimeSlot(string id)
+        [HttpDelete()]
+        [Route(APIRoutes.DeleteTimeSlot)]
+        public async Task<IActionResult> DeleteTimeSlot(int id)
         {
             try
             {
-                var existingExpert = _repositoryCallAvailability.FindById(id);
+                var field = "CallAvailabilityId";
+                var existingExpert = _repositoryCallAvailability.FindById(id, field);
                 if (existingExpert == null)
                 {
                     return NotFound("Expert not found.");
                 }
-                await _repositoryCallAvailability.DeleteByIdAsync(id);
+                await _repositoryCallAvailability.DeleteByIdAsync(id, field);
                 return Ok("Expert deleted successfully.");
             }
             catch (Exception ex)

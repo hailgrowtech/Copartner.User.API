@@ -58,10 +58,11 @@ namespace CopartnerUser.DataAccessLayer.Repository
             return Task.Run(() => _collection.Find(filterExpression).FirstOrDefaultAsync());
         }
 
-        public virtual TDocument FindById(string id)
+        public virtual TDocument FindById(int id, string field)
         {
-            var objectId = new ObjectId(id);
-            var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
+            //var objectId = new ObjectId(id);
+            var filter = Builders<TDocument>.Filter.Eq(field, id);
+            //var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
             return _collection.Find(filter).SingleOrDefault();
         }
 
@@ -126,12 +127,13 @@ namespace CopartnerUser.DataAccessLayer.Repository
             _collection.FindOneAndDelete(filter);
         }
 
-        public Task DeleteByIdAsync(string id)
+        public Task DeleteByIdAsync(int id, string field)
         {
             return Task.Run(() =>
             {
-                var objectId = new ObjectId(id);
-                var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
+                //var objectId = new ObjectId(id);
+                var filter = Builders<TDocument>.Filter.Eq(field, id);
+                //var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
                 _collection.FindOneAndDeleteAsync(filter);
             });
         }
