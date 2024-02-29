@@ -1,7 +1,11 @@
 using CopartnerUser.DataAccessLayer.MongoDBSettings;
 using CopartnerUser.DataAccessLayer.Repository;
+using CopartnerUser.DataAccessLayerADO;
+using CopartnerUser.ServiceLayer.ExpertService;
+using CopartnerUser.ServiceLayer.UserService;
 using Microsoft.Extensions.Options;
 using Serilog;
+using System.Configuration;
 
 namespace CopartnerUserAPI
 {
@@ -30,6 +34,16 @@ namespace CopartnerUserAPI
                 serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>().Value);
 
             builder.Services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
+
+
+            // Add your DAL services
+            // Assuming "DefaultConnection" is the name of your connection string in appsettings.json
+            // and "System.Data.SqlClient" is the provider name. Adjust these as necessary.
+            builder.Services.AddScoped<DBManager>(sp => new DBManager(builder.Configuration, "DefaultConnection", "System.Data.SqlClient"));
+
+            // Add your Service Layer services
+            builder.Services.AddScoped<IUserService, UserService>();
+
 
 
 

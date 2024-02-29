@@ -22,7 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CopartnerUser.DataAccessLayerADO\CopartnerUser.DataAccessLayerADO.csproj" />
     <ProjectReference Include="..\CopartnerUser.DataAccessLayer\CopartnerUser.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\CopartnerUser.ServiceLayer\CopartnerUser.ServiceLayer.csproj" />
   </ItemGroup>
 
 </Project>

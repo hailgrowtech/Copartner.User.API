@@ -107,6 +107,7 @@ namespace CopartnerUserAPI.Controllers
         {
             try
             {
+                
                 var allExperts = _repositoryExperts.AsQueryable().ToList();
                 return Ok(allExperts);
             }
