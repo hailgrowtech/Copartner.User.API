@@ -1,8 +1,10 @@
 using CopartnerUser.DataAccessLayer.MongoDBSettings;
 using CopartnerUser.DataAccessLayer.Repository;
 using CopartnerUser.DataAccessLayerADO;
-using CopartnerUser.ServiceLayer.ExpertService;
+using CopartnerUser.ServiceLayer.Services;
+using CopartnerUser.ServiceLayer.Services.Interfaces;
 using CopartnerUser.ServiceLayer.UserService;
+using CopartnerUserAPI.ErrorHandling;
 using Microsoft.Extensions.Options;
 using Serilog;
 using System.Configuration;
@@ -43,12 +45,12 @@ namespace CopartnerUserAPI
 
             // Add your Service Layer services
             builder.Services.AddScoped<IUserService, UserService>();
-
+            builder.Services.AddScoped<IAvailabilityTypesService, AvailabilityTypesService>();
 
 
 
             // Add Exception Middleware
-
+            //builder.Services.AddTransient<ExceptionHandlerMiddleware>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -68,6 +70,8 @@ namespace CopartnerUserAPI
 
             app.UseAuthorization();
 
+            // Add Exception Middleware
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             app.MapControllers();
 

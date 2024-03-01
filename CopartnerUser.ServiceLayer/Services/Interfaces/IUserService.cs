@@ -1,11 +1,11 @@
-﻿using CopartnerUser.DataAccessLayerADO.Models;
+﻿using CopartnerUser.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CopartnerUser.ServiceLayer.ExpertService
+namespace CopartnerUser.ServiceLayer.Services.Interfaces
 {
     public interface IUserService
     {

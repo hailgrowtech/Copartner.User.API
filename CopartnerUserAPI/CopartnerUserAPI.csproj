@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CopartnerUser.Common\CopartnerUser.Common.csproj" />
     <ProjectReference Include="..\CopartnerUser.DataAccessLayerADO\CopartnerUser.DataAccessLayerADO.csproj" />
     <ProjectReference Include="..\CopartnerUser.DataAccessLayer\CopartnerUser.DataAccessLayer.csproj" />
     <ProjectReference Include="..\CopartnerUser.ServiceLayer\CopartnerUser.ServiceLayer.csproj" />

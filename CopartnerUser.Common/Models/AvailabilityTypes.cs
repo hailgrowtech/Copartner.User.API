@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CopartnerUser.DataAccessLayerADO.Models
+namespace CopartnerUser.Common.Models
 {
-    public class User
+    public class AvailabilityTypes
     {
         public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string AvailabilityType { get; set; }
     }
 }
