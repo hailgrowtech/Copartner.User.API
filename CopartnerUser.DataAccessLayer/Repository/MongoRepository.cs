@@ -1,4 +1,5 @@
 ﻿using CopartnerUser.DataAccessLayer.Entities;
+using CopartnerUser.DataAccessLayer.Models;
 using CopartnerUser.DataAccessLayer.MongoDBSettings;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -20,7 +21,7 @@ namespace CopartnerUser.DataAccessLayer.Repository
             var database = new MongoClient(settings.ConnectionString).GetDatabase(settings.DatabaseName);
             _collection = database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
         }
-
+       
         private protected string GetCollectionName(Type documentType)
         {
             return ((BsonCollectionAttribute)documentType.GetCustomAttributes(
@@ -57,10 +58,11 @@ namespace CopartnerUser.DataAccessLayer.Repository
             return Task.Run(() => _collection.Find(filterExpression).FirstOrDefaultAsync());
         }
 
-        public virtual TDocument FindById(string id)
+        public virtual TDocument FindById(int id, string field)
         {
-            var objectId = new ObjectId(id);
-            var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
+            //var objectId = new ObjectId(id);
+            var filter = Builders<TDocument>.Filter.Eq(field, id);
+            //var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
             return _collection.Find(filter).SingleOrDefault();
         }
 
@@ -125,12 +127,13 @@ namespace CopartnerUser.DataAccessLayer.Repository
             _collection.FindOneAndDelete(filter);
         }
 
-        public Task DeleteByIdAsync(string id)
+        public Task DeleteByIdAsync(int id, string field)
         {
             return Task.Run(() =>
             {
-                var objectId = new ObjectId(id);
-                var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
+                //var objectId = new ObjectId(id);
+                var filter = Builders<TDocument>.Filter.Eq(field, id);
+                //var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, objectId);
                 _collection.FindOneAndDeleteAsync(filter);
             });
         }
@@ -145,9 +148,29 @@ namespace CopartnerUser.DataAccessLayer.Repository
             return Task.Run(() => _collection.DeleteManyAsync(filterExpression));
         }
 
+        public async Task<TDocument> FindOneAndUpdateAsync(Expression<Func<TDocument, bool>> filterExpression, UpdateDefinition<TDocument> updateDefinition, FindOneAndUpdateOptions<TDocument> options)
+        {
+            return await _collection.FindOneAndUpdateAsync(filterExpression, updateDefinition, options);
+        }
+
+
+        public virtual async Task<int> GetNextSequenceValue(string sequenceName)
+        {
+            var filter = Builders<TDocument>.Filter.Eq("Name", sequenceName);
+            var update = Builders<TDocument>.Update.Inc("Value", 1);
+            var options = new FindOneAndUpdateOptions<TDocument, TDocument>
+            {
+                IsUpsert = true,
+                ReturnDocument = ReturnDocument.After
+            };
+
+            var sequence = await _collection.FindOneAndUpdateAsync(filter, update, options);
+            return sequence == null ? 1 : ((Sequence)(object)sequence).Value;
+        }
+
         //public Task<List<TDocument>> FindAsync()
         //{
-            
+
         //    return _collection.FindSync().ToList();
         //}
     }
